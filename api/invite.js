@@ -20,6 +20,9 @@ module.exports = async (req, res) => {
 
   let title = "Wedding Invitation";
   let description = "You're invited! Tap to view the invitation, countdown & RSVP.";
+  let bride = '';
+  let groom = '';
+  let dateFmt = '';
 
   if (slug) {
     try {
@@ -29,12 +32,12 @@ module.exports = async (req, res) => {
       if (fsRes.ok) {
         const doc = await fsRes.json();
         const f = doc.fields || {};
-        const bride = f.brideName && f.brideName.stringValue;
-        const groom = f.groomName && f.groomName.stringValue;
+        bride = (f.brideName && f.brideName.stringValue) || '';
+        groom = (f.groomName && f.groomName.stringValue) || '';
         const dateStr = f.weddingDate && f.weddingDate.stringValue;
         if (bride && groom) {
           title = `${bride} & ${groom} | Wedding Invitation`;
-          const dateFmt = dateStr ? formatDate(dateStr) : '';
+          dateFmt = dateStr ? formatDate(dateStr) : '';
           description = `You're invited! Join us for ${bride} & ${groom}'s wedding${dateFmt ? ' on ' + dateFmt : ''}.`;
         }
       }
@@ -46,7 +49,9 @@ module.exports = async (req, res) => {
   const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
   const host = req.headers.host;
   const pageUrl = `${proto}://${host}/i/${encodeURIComponent(slug)}/`;
-  const imageUrl = `${proto}://${host}/assets/og-preview.png`;
+  const imageUrl = (bride && groom)
+    ? `${proto}://${host}/api/og?bride=${encodeURIComponent(bride)}&groom=${encodeURIComponent(groom)}&date=${encodeURIComponent(dateFmt)}`
+    : `${proto}://${host}/assets/og-preview.png`;
 
   let html;
   try {
