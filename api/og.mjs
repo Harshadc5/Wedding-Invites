@@ -6,6 +6,19 @@ function h(type, props, children) {
   return { type, props: { ...props, children } };
 }
 
+async function loadGoogleFont(fontFamily, text) {
+  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@700&text=${encodeURIComponent(text)}`;
+  const css = await (await fetch(url)).text();
+  const resource = css.match(/src: url\(([^)]+)\) format\('(opentype|truetype)'\)/);
+  if (resource) {
+    const response = await fetch(resource[1]);
+    if (response.status === 200) {
+      return await response.arrayBuffer();
+    }
+  }
+  throw new Error('failed to load font data');
+}
+
 export default async function handler(req) {
   const { searchParams } = new URL(req.url);
   const bride = searchParams.get('bride') || 'Bride';
@@ -14,9 +27,7 @@ export default async function handler(req) {
 
   let fontData = null;
   try {
-    fontData = await fetch(
-      'https://raw.githubusercontent.com/google/fonts/main/ofl/playfairdisplay/PlayfairDisplay-Bold.ttf'
-    ).then((r) => (r.ok ? r.arrayBuffer() : null));
+    fontData = await loadGoogleFont('Playfair Display', bride + groom + date + ' &');
   } catch (e) {
     fontData = null;
   }
@@ -51,9 +62,13 @@ export default async function handler(req) {
     },
   }, children);
 
-  return new ImageResponse(tree, {
-    width: 1200,
-    height: 630,
-    fonts: fontData ? [{ name: 'Playfair Display', data: fontData, weight: 700, style: 'normal' }] : [],
-  });
+  try {
+    return new ImageResponse(tree, {
+      width: 1200,
+      height: 630,
+      fonts: fontData ? [{ name: 'Playfair Display', data: fontData, weight: 700, style: 'normal' }] : [],
+    });
+  } catch (e) {
+    return new Response('Image generation failed: ' + e.message, { status: 500 });
+  }
 }
