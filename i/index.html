@@ -902,13 +902,16 @@ function render(){
 }
 
 /* ---------- Background music playback ---------- */
+/* Nothing plays until the user taps "Tap To Open" (or the music FAB) — a
+   genuine gesture. We never attempt autoplay on load, so there's exactly
+   one place playback can start and no risk of it starting twice. */
 let bgAudio, musicFab, eqBars, ytContainer;
-let gestureBound = false;
 let playerType = null;
 let ytPlayer = null;
 let ytApiPromise = null;
 let ytLoopInterval = null;
 let currentTrackLoadedId = null;
+let pendingPlay = false;
 
 function setPlayingUI(isPlaying){
   if(!musicFab) return;
@@ -921,10 +924,12 @@ function playCurrent(){
     ytPlayer.playVideo();
     return Promise.resolve();
   }
-  if(playerType === 'audio' && bgAudio){
+  if(playerType === 'audio' && bgAudio && bgAudio.src){
     return bgAudio.play();
   }
-  return Promise.reject();
+  // Track isn't loaded/ready yet — remember the request and play as soon as it is.
+  pendingPlay = true;
+  return Promise.resolve();
 }
 
 function pauseCurrent(){
@@ -943,19 +948,6 @@ function isPausedCurrent(){
     return bgAudio.paused;
   }
   return true;
-}
-
-function bindGestureFallback(){
-  if(gestureBound) return;
-  gestureBound = true;
-  const tryStart = ()=>{
-    const p = playCurrent();
-    if(p && p.then) p.then(()=> setPlayingUI(true)).catch(()=>{});
-    else setPlayingUI(true);
-  };
-  document.addEventListener('touchstart', tryStart, {once:true, passive:true});
-  document.addEventListener('click', tryStart, {once:true});
-  document.addEventListener('keydown', tryStart, {once:true});
 }
 
 function loadYouTubeAPI(){
@@ -987,7 +979,7 @@ function startYouTubeTrack(track){
     if(ytLoopInterval){ clearInterval(ytLoopInterval); ytLoopInterval = null; }
     ytContainer.innerHTML = '<div id="ytPlayerSlot"></div>';
     const playerVars = {
-      autoplay:1, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1,
+      autoplay:0, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1,
       start: loopStart
     };
     if(hasCustomEnd) playerVars.end = track.endSeconds;
@@ -1009,10 +1001,12 @@ function startYouTubeTrack(track){
       playerVars,
       events:{
         onReady: (e)=>{
-          e.target.playVideo();
-          setTimeout(()=>{
-            if(isPausedCurrent()){ setPlayingUI(false); bindGestureFallback(); }
-          }, 1000);
+          if(pendingPlay){
+            pendingPlay = false;
+            e.target.playVideo();
+          }else{
+            setPlayingUI(false);
+          }
         },
         onStateChange: (e)=>{
           if(e.data === YT.PlayerState.PLAYING) setPlayingUI(true);
@@ -1036,12 +1030,14 @@ function startAudioTrack(src){
   if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
   if(ytLoopInterval){ clearInterval(ytLoopInterval); ytLoopInterval = null; }
   bgAudio.src = src;
-  const playAttempt = bgAudio.play();
-  if(playAttempt && playAttempt.then){
-    playAttempt.then(()=> setPlayingUI(true)).catch(()=>{
-      setPlayingUI(false);
-      bindGestureFallback();
-    });
+  bgAudio.load();
+  setPlayingUI(false);
+  if(pendingPlay){
+    pendingPlay = false;
+    const playAttempt = bgAudio.play();
+    if(playAttempt && playAttempt.then){
+      playAttempt.then(()=> setPlayingUI(true)).catch(()=>{ setPlayingUI(false); });
+    }
   }
 }
 
@@ -1064,7 +1060,6 @@ function applyCurrentTrack(){
   currentTrackLoadedId = track.id;
 
   musicFab.style.display = 'flex';
-  gestureBound = false;
 
   if(track.type === 'youtube'){
     startYouTubeTrack(track);
