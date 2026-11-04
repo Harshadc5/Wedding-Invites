@@ -621,9 +621,6 @@ const TEMPLATES = {
   addToCalendar: () => `
     <section class="reveal no-print" style="padding:6px 28px 10px;">
       <a class="btn" id="calBtn" href="#">+ Add To Calendar</a>
-      <div style="margin-top:12px;">
-        <button class="btn" id="pdfBtn" type="button">&#8681; Save as PDF</button>
-      </div>
     </section>`,
 
   hashtag: (d) => `
@@ -792,14 +789,6 @@ function bindEvents(){
     hashtagPill.addEventListener('click', ()=>{
       navigator.clipboard.writeText(data.hashtag).then(()=> toast('Hashtag copied!'))
         .catch(()=> toast(data.hashtag));
-    });
-  }
-
-  const pdfBtn = document.getElementById('pdfBtn');
-  if(pdfBtn){
-    pdfBtn.addEventListener('click', ()=>{
-      toast('Opening print dialog — choose "Save as PDF"');
-      setTimeout(()=> window.print(), 300);
     });
   }
 
