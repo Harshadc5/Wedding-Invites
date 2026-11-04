@@ -193,6 +193,53 @@
   .music-fab.paused .eq-bars{display:none;}
   .music-fab.paused .play-icon{display:block;}
 
+  .splash{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:var(--cream);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  .splash.closing{ opacity:0; visibility:hidden; pointer-events:none; }
+  .splash-inner{ max-width:360px; }
+  .splash-label{
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    letter-spacing:2px;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .splash-names{
+    font-size:40px;
+    line-height:1.3;
+    margin-bottom:40px;
+    word-break:break-word;
+  }
+  .splash-btn{
+    font-family:'Cinzel',serif;
+    font-size:13px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:16px 36px;
+    border-radius:34px;
+    border:1px solid var(--gold);
+    background:var(--maroon);
+    color:#fff;
+    cursor:pointer;
+    animation:splashPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes splashPulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(138,31,59,.35); }
+    50%{ box-shadow:0 0 0 12px rgba(138,31,59,0); }
+  }
+  @media print{ .splash{ display:none !important; } }
+
   .print-only{display:none;}
   .print-qr-block{text-align:center;margin-top:10px;}
   .print-qr-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;color:var(--gold-light);margin-bottom:10px;}
@@ -214,6 +261,14 @@
 <body>
 
 <div class="page" id="pageRoot"><div class="state-msg">Loading invitation…</div></div>
+
+<div class="splash no-print" id="splash" style="display:none;">
+  <div class="splash-inner">
+    <div class="splash-label">You're Invited To The Wedding Of</div>
+    <div class="splash-names script" id="splashNames">&nbsp;</div>
+    <button class="splash-btn" id="splashBtn" type="button">&#9835; Tap To Open</button>
+  </div>
+</div>
 
 <audio id="bgAudio" loop preload="auto"></audio>
 <div id="ytPlayerContainer" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;"></div>
@@ -868,12 +923,34 @@ if(!slug){
     data = d;
     render();
     applyCurrentTrack();
+    maybeShowSplash(d);
   });
   watchTracks(slug, (t)=>{
     tracks = t;
     applyCurrentTrack();
   });
 }
+
+/* ---------- Tap-to-open splash (also reliably unlocks audio on mobile) ---------- */
+let splashShown = false;
+
+function maybeShowSplash(d){
+  if(splashShown || !d) return;
+  splashShown = true;
+  const [n1,,n2] = namesInOrder(d);
+  document.getElementById('splashNames').innerHTML =
+    esc(n1) + ' <span style="color:var(--gold); font-family:\'Cormorant Garamond\',serif;">&amp;</span> ' + esc(n2);
+  document.getElementById('splash').style.display = 'flex';
+}
+
+document.getElementById('splashBtn').addEventListener('click', ()=>{
+  const splash = document.getElementById('splash');
+  splash.classList.add('closing');
+  setTimeout(()=>{ splash.style.display = 'none'; }, 520);
+  const p = playCurrent();
+  if(p && p.then) p.then(()=> setPlayingUI(true)).catch(()=>{});
+  else setPlayingUI(true);
+});
 </script>
 
 </body>
