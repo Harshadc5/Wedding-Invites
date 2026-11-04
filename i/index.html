@@ -844,20 +844,34 @@ function bindEvents(){
       const dt = new Date(data.weddingDate + 'T10:00:00');
       const end = new Date(dt.getTime() + 4*60*60*1000);
       const fmt = dd => dd.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
-      const ics = [
-        'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
-        'SUMMARY:' + data.brideName + ' & ' + data.groomName + '\'s Wedding',
-        'DTSTART:' + fmt(dt),
-        'DTEND:' + fmt(end),
-        'LOCATION:' + data.venueName + ', ' + data.venueAddr,
-        'DESCRIPTION:' + data.coupleMsg,
-        'END:VEVENT','END:VCALENDAR'
-      ].join('\r\n');
-      const blob = new Blob([ics], {type:'text/calendar'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'wedding-invite.ics';
-      a.click();
+      const title = data.brideName + ' & ' + data.groomName + '\'s Wedding';
+      const location = data.venueName + ', ' + data.venueAddr;
+      const ua = navigator.userAgent || '';
+      const isApple = /iPhone|iPad|iPod|Macintosh/.test(ua) && 'ontouchstart' in window || /iPhone|iPad|iPod/.test(ua);
+
+      if(isApple){
+        // iOS/iPadOS opens a .ics served as a direct navigation straight in the
+        // native Calendar app's "Add Event" sheet — no download step needed.
+        const ics = [
+          'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+          'SUMMARY:' + title,
+          'DTSTART:' + fmt(dt),
+          'DTEND:' + fmt(end),
+          'LOCATION:' + location,
+          'DESCRIPTION:' + data.coupleMsg,
+          'END:VEVENT','END:VCALENDAR'
+        ].join('\r\n');
+        window.location.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+      }else{
+        // Everywhere else, Google Calendar's prefilled event link opens the
+        // Calendar app directly on Android and the Calendar site elsewhere.
+        const gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+          + '&text=' + encodeURIComponent(title)
+          + '&dates=' + fmt(dt) + '/' + fmt(end)
+          + '&details=' + encodeURIComponent(data.coupleMsg)
+          + '&location=' + encodeURIComponent(location);
+        window.open(gcalUrl, '_blank');
+      }
     });
   }
 }
