@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/i/:slug*", "destination": "/i/index.html" },
+    { "source": "/i/:slug", "destination": "/api/invite?slug=:slug" },
+    { "source": "/i/:slug/", "destination": "/api/invite?slug=:slug" },
     { "source": "/admin/edit/:slug*", "destination": "/admin/edit/index.html" }
   ]
 }
