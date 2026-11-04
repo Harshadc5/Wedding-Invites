@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fbf2e2;
+    --gold:#b9892f;
+    --gold-light:#d8b25c;
+    --maroon:#8a1f3b;
+    --maroon-dark:#5f1327;
+    --ink:#4a3324;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#e8ddc9;
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{width:100%;max-width:520px;background:#fff;min-height:100vh;box-shadow:0 0 60px rgba(0,0,0,.2);}
+  header{background:var(--maroon-dark);color:var(--cream);padding:22px 24px;position:sticky;top:0;z-index:5;}
+  header .eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-light);text-transform:uppercase;}
+  header h1{margin:4px 0 2px;font-family:'Cinzel',serif;font-size:20px;font-weight:600;word-break:break-word;}
+  header a{color:var(--gold-light);font-size:13px;text-decoration:none;}
+  .header-row{display:flex;justify-content:space-between;align-items:center;margin-top:2px;flex-wrap:wrap;gap:8px;}
+  .logout-btn{
+    background:transparent;border:1px solid var(--gold-light);color:var(--gold-light);font-family:'Cinzel',serif;
+    font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:16px;cursor:pointer;
+  }
+  form{padding:10px 24px 100px;}
+  h3{
+    font-family:'Cinzel',serif;font-size:15px;color:var(--maroon);margin:22px 0 8px;letter-spacing:1px;
+    border-bottom:1px solid #eee2c8;padding-bottom:6px;
+  }
+  h3:first-child{margin-top:18px;}
+  label{display:block;font-size:12px;color:#8a7a60;margin-top:12px;letter-spacing:.5px;}
+  input, textarea, select{
+    width:100%;padding:10px 12px;border:1px solid #e0d2b2;border-radius:8px;font-family:inherit;
+    font-size:16px;margin-top:4px;background:#fff;
+  }
+  select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;padding-right:36px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%238a7a60'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;background-size:18px;line-height:normal;
+  }
+  textarea{min-height:70px; resize:vertical;}
+  .actions{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;}
+  .actions-inner{
+    width:100%;max-width:520px;display:flex;gap:10px;padding:14px 24px;background:#fff;box-shadow:0 -4px 16px rgba(0,0,0,.08);
+  }
+  .actions-inner button{
+    flex:1;padding:14px;border-radius:30px;border:none;font-family:'Cinzel',serif;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  }
+  #saveBtn{background:var(--maroon);color:#fff;}
+  #viewBtn{background:#f6d87a;color:var(--maroon-dark);}
+  .toast{
+    position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+    padding:10px 20px;border-radius:30px;font-size:14px;opacity:0;transition:opacity .3s, transform .3s;z-index:200;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .state-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;}
+  .state-screen .eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+  .state-screen h1{font-family:'Cinzel',serif;font-size:20px;color:var(--maroon);margin:8px 0 10px;}
+  .state-screen p{color:#8a7a60;font-size:14px;}
+  .state-screen a{color:var(--maroon);}
+  .dash-content{display:none;}
+  .dash-content.open{display:block;}
+
+  .order-item{
+    display:flex;align-items:center;justify-content:space-between;background:#fbf2e2;border:1px solid #e0d2b2;
+    border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:15px;
+  }
+  .order-item .order-btns{display:flex;gap:6px;}
+  .order-item button{
+    width:30px;height:30px;border-radius:50%;border:1px solid var(--gold-light);background:#fff;color:var(--maroon);
+    font-size:14px;cursor:pointer;line-height:1;
+  }
+  .order-item button:disabled{opacity:.3;cursor:default;}
+
+  .hint-text{font-size:13px;color:#8a7a60;margin:0 0 6px;}
+  .music-controls{display:flex;gap:10px;margin-top:10px;}
+  .music-controls input{margin-top:0;}
+  .music-btn-row{display:flex;gap:10px;margin-top:12px;}
+  .music-btn-row button{
+    flex:1;padding:11px;border-radius:20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;
+    text-transform:uppercase;cursor:pointer;border:1px solid var(--gold);background:#fff;color:var(--maroon-dark);
+  }
+  #trackList{list-style:none;padding:0;margin:12px 0 0;}
+  .track-item{
+    display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e0d2b2;border-radius:10px;
+    padding:8px 10px;margin-bottom:8px;
+  }
+  .track-item.current{border-color:var(--maroon);background:#fdf0e6;}
+  .track-preview{
+    width:34px;height:34px;flex-shrink:0;border-radius:50%;border:1px solid var(--gold-light);background:#fff;
+    cursor:pointer;font-size:13px;color:var(--maroon);
+  }
+  .track-meta{flex:1;min-width:0;}
+  .track-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .track-sub{font-size:12px;color:#8a7a60;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .track-select{
+    font-size:11px;padding:7px 10px;border-radius:14px;border:1px solid var(--gold-light);background:#fff;
+    color:var(--maroon);cursor:pointer;white-space:nowrap;flex-shrink:0;
+  }
+  .track-item.current .track-select{background:var(--maroon);color:#fff;border-color:var(--maroon);}
+  .track-delete{
+    width:26px;height:26px;flex-shrink:0;border-radius:50%;border:none;background:transparent;color:#b33636;
+    cursor:pointer;font-size:15px;
+  }
+  .track-empty{color:#8a7a60;font-size:14px;padding:10px 2px;}
+  .track-form{display:none;border:1px solid #e0d2b2;border-radius:10px;padding:14px;margin-top:12px;background:#fbf2e2;}
+  .track-form.open{display:block;}
+  .track-form-actions{display:flex;gap:10px;margin-top:14px;}
+  .track-form-actions button{
+    flex:1;padding:11px;border-radius:20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;
+    text-transform:uppercase;cursor:pointer;border:none;
+  }
+  #tf_save{background:var(--maroon);color:#fff;}
+  #tf_cancel{background:#eee;color:var(--ink);}
+</style>
+</head>
+<body>
+
+<div id="authScreen" class="state-screen">
+  <div class="eyebrow">Invitation Editor</div>
+  <h1>Checking sign-in…</h1>
+</div>
+
+<div id="notFoundScreen" class="state-screen" style="display:none;">
+  <div class="eyebrow">Invitation Editor</div>
+  <h1>Invitation not found</h1>
+  <p>No invitation matches this link.<br><a href="../">&larr; Back to all invitations</a></p>
+</div>
+
+<div class="wrap dash-content" id="dashContent">
+  <header>
+    <div class="eyebrow">Invitation Editor</div>
+    <h1 id="headerTitle">Edit Details</h1>
+    <div class="header-row">
+      <a href="../">&larr; All invitations</a>
+      <button class="logout-btn" id="logoutBtn" type="button">Logout</button>
+    </div>
+  </header>
+
+  <form id="dashForm" onsubmit="return false;">
+    <h3>Couple</h3>
+    <label>Bride's Name</label><input id="f_brideName">
+    <label>Groom's Name</label><input id="f_groomName">
+    <label>Names Order</label>
+    <select id="f_nameOrder">
+      <option value="bride">Bride First</option>
+      <option value="groom">Groom First</option>
+    </select>
+
+    <h3>Date</h3>
+    <label>Wedding Date</label><input id="f_weddingDate" type="date">
+
+    <h3>Bride's Parents</h3>
+    <label>Mother</label><input id="f_brideMother">
+    <label>Father</label><input id="f_brideFather">
+
+    <h3>Groom's Parents</h3>
+    <label>Mother</label><input id="f_groomMother">
+    <label>Father</label><input id="f_groomFather">
+
+    <label>Parents Order (in Blessing section)</label>
+    <select id="f_parentsOrder">
+      <option value="bride">Bride's Parents First</option>
+      <option value="groom">Groom's Parents First</option>
+    </select>
+
+    <h3>Venue</h3>
+    <label>Venue Name</label><input id="f_venueName">
+    <label>Venue Address</label><input id="f_venueAddr">
+
+    <h3>Hashtag</h3>
+    <label>Wedding Hashtag</label><input id="f_hashtag">
+
+    <h3>Contact</h3>
+    <label>Contact Name</label><input id="f_contactName">
+    <label>Relation</label><input id="f_contactRel">
+    <label>Phone (with country code, e.g. +91...)</label><input id="f_contactPhone">
+
+    <h3>Messages</h3>
+    <label>Blessing line (above couple names)</label>
+    <textarea id="f_blessingText"></textarea>
+    <label>"Meet the Bride & Groom" message</label>
+    <textarea id="f_coupleMsg"></textarea>
+
+    <h3>Background Music</h3>
+    <p class="hint-text">Add a song by YouTube link or direct audio URL. Tap "Set as Current" to make it the song that plays when guests open the invitation.</p>
+
+    <div class="music-controls">
+      <input id="musicSearch" placeholder="Search by title or artist">
+    </div>
+
+    <ul id="trackList"></ul>
+
+    <div class="music-btn-row">
+      <button type="button" id="addUrlBtn">🔗 Add By Link</button>
+    </div>
+
+    <div class="track-form" id="trackForm">
+      <label>Audio URL or YouTube Link</label><input id="tf_url" placeholder="https://.../song.mp3 or a YouTube link">
+      <div id="tf_ytHint" style="display:none; font-size:12px; color:var(--maroon); margin-top:6px;">🎬 YouTube link detected — it will play as a hidden background player.</div>
+      <div id="tf_startWrap" style="display:none;">
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1;">
+            <label>Start at (seconds)</label>
+            <input id="tf_start" type="number" min="0" placeholder="0">
+          </div>
+          <div style="flex:1;">
+            <label>End at (seconds, optional)</label>
+            <input id="tf_end" type="number" min="0" placeholder="e.g. 60">
+          </div>
+        </div>
+        <div style="font-size:12px;color:#8a7a60;margin-top:6px;">Leave "End at" empty to play from the start point to the end of the video, then loop the whole video. Set both to loop just that highlight.</div>
+      </div>
+      <div class="track-form-actions">
+        <button type="button" id="tf_cancel">Cancel</button>
+        <button type="button" id="tf_save">Save Song</button>
+      </div>
+    </div>
+
+    <h3>Section Order</h3>
+    <p style="font-size:13px;color:#8a7a60;margin:0 0 4px;">Use the arrows to reorder sections on the invitation page.</p>
+    <ul id="orderList" style="list-style:none;padding:0;margin:8px 0 0;"></ul>
+  </form>
+
+  <div class="actions">
+    <div class="actions-inner">
+      <button id="viewBtn" type="button">View Invitation</button>
+      <button id="saveBtn" type="button">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import {
+  DEFAULTS, SECTION_LABELS, watchAuth, logoutAdmin,
+  loadInvitation, saveInvitation, getSlugFromLocation,
+  listTracks, addTrack, deleteTrack, setCurrentTrack,
+  extractYouTubeId, parseYouTubeStart, fetchYouTubeMeta, fallbackTitleFromUrl
+} from '../../firebase-shared.js';
+
+const slug = getSlugFromLocation('/admin/edit/');
+const authScreen = document.getElementById('authScreen');
+const notFoundScreen = document.getElementById('notFoundScreen');
+const dashContent = document.getElementById('dashContent');
+
+let data = null;
+let orderState = [];
+let tracks = [];
+let currentTrackId = null;
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function fillForm(){
+  for(const key of Object.keys(DEFAULTS)){
+    const el = document.getElementById('f_'+key);
+    if(el) el.value = data[key] ?? '';
+  }
+  orderState = data.sectionOrder.slice();
+  renderOrderList();
+  document.getElementById('headerTitle').textContent = data.brideName + ' & ' + data.groomName;
+}
+
+function readForm(){
+  const next = Object.assign({}, data);
+  for(const key of Object.keys(DEFAULTS)){
+    const el = document.getElementById('f_'+key);
+    if(el) next[key] = el.value;
+  }
+  next.sectionOrder = orderState.slice();
+  return next;
+}
+
+function renderOrderList(){
+  const list = document.getElementById('orderList');
+  list.innerHTML = orderState.map((id, i) => `
+    <li class="order-item">
+      <span>${SECTION_LABELS[id] || id}</span>
+      <span class="order-btns">
+        <button type="button" data-action="up" data-index="${i}" ${i===0 ? 'disabled' : ''}>&uarr;</button>
+        <button type="button" data-action="down" data-index="${i}" ${i===orderState.length-1 ? 'disabled' : ''}>&darr;</button>
+      </span>
+    </li>
+  `).join('');
+}
+
+document.getElementById('orderList').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const i = parseInt(btn.dataset.index, 10);
+  const action = btn.dataset.action;
+  if(action === 'up' && i > 0){
+    [orderState[i-1], orderState[i]] = [orderState[i], orderState[i-1]];
+  }else if(action === 'down' && i < orderState.length-1){
+    [orderState[i+1], orderState[i]] = [orderState[i], orderState[i+1]];
+  }
+  renderOrderList();
+});
+
+/* ---------- Background music library ---------- */
+let previewAudio = new Audio();
+let previewPlayingId = null;
+let pendingType = 'url';
+
+function escMusic(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderTrackList(){
+  const list = document.getElementById('trackList');
+  const q = document.getElementById('musicSearch').value.trim().toLowerCase();
+  const filtered = tracks.filter(t=>{
+    return !q || (t.title||'').toLowerCase().includes(q) || (t.artist||'').toLowerCase().includes(q);
+  });
+  if(filtered.length === 0){
+    list.innerHTML = '<li class="track-empty">No songs yet — add a link above.</li>';
+    return;
+  }
+  list.innerHTML = filtered.map(t => `
+    <li class="track-item ${t.id===currentTrackId ? 'current' : ''}" data-id="${t.id}">
+      <button type="button" class="track-preview" data-id="${t.id}" title="${t.type==='youtube' ? 'Open on YouTube' : 'Preview'}">${t.type==='youtube' ? '↗' : (previewPlayingId===t.id ? '⏸' : '▶')}</button>
+      <div class="track-meta">
+        <div class="track-title">${escMusic(t.title || 'Untitled')}</div>
+        <div class="track-sub">${escMusic(t.artist || 'Unknown artist')}${t.type==='youtube' ? ' • YouTube' + (t.endSeconds ? ` (${t.startSeconds||0}s–${t.endSeconds}s)` : (t.startSeconds ? ` (from ${t.startSeconds}s)` : '')) : ''}</div>
+      </div>
+      <button type="button" class="track-select" data-id="${t.id}">${t.id===currentTrackId ? 'Current' : 'Set as Current'}</button>
+      <button type="button" class="track-delete" data-id="${t.id}" title="Delete">&times;</button>
+    </li>
+  `).join('');
+}
+
+document.getElementById('musicSearch').addEventListener('input', renderTrackList);
+
+document.getElementById('trackList').addEventListener('click', async (e)=>{
+  const previewBtn = e.target.closest('.track-preview');
+  const selectBtn = e.target.closest('.track-select');
+  const delBtn = e.target.closest('.track-delete');
+
+  if(previewBtn){
+    const id = previewBtn.dataset.id;
+    const t = tracks.find(tr => tr.id === id);
+    if(t.type === 'youtube'){
+      window.open('https://www.youtube.com/watch?v=' + t.videoId + (t.startSeconds ? '&t=' + t.startSeconds + 's' : ''), '_blank');
+      return;
+    }
+    if(previewPlayingId === id){
+      previewAudio.pause();
+      previewPlayingId = null;
+    }else{
+      previewAudio.pause();
+      previewAudio.src = t.url;
+      previewAudio.play().catch(()=>{});
+      previewPlayingId = id;
+    }
+    renderTrackList();
+  }else if(selectBtn){
+    const prevId = currentTrackId;
+    currentTrackId = selectBtn.dataset.id;
+    renderTrackList();
+    try{
+      await setCurrentTrack(slug, currentTrackId);
+      data.currentTrackId = currentTrackId;
+      toast("Set as the invitation's background music");
+    }catch(err){
+      currentTrackId = prevId;
+      renderTrackList();
+      toast('Could not save — ' + (err.message || 'try signing out and back in'));
+    }
+  }else if(delBtn){
+    const id = delBtn.dataset.id;
+    try{
+      await deleteTrack(slug, id);
+      tracks = tracks.filter(t => t.id !== id);
+      if(currentTrackId === id){
+        currentTrackId = null;
+        await setCurrentTrack(slug, null);
+        data.currentTrackId = null;
+      }
+      if(previewPlayingId === id){
+        previewAudio.pause();
+        previewPlayingId = null;
+      }
+      renderTrackList();
+      toast('Song removed');
+    }catch(err){
+      toast('Could not delete — ' + (err.message || 'try signing out and back in'));
+    }
+  }
+});
+
+previewAudio.addEventListener('ended', ()=>{
+  previewPlayingId = null;
+  renderTrackList();
+});
+
+function openTrackForm(){
+  document.getElementById('tf_url').value = '';
+  document.getElementById('tf_start').value = '';
+  document.getElementById('tf_end').value = '';
+  document.getElementById('tf_ytHint').style.display = 'none';
+  document.getElementById('tf_startWrap').style.display = 'none';
+  const form = document.getElementById('trackForm');
+  form.classList.add('open');
+  form.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+document.getElementById('tf_url').addEventListener('input', (e)=>{
+  const ytId = extractYouTubeId(e.target.value.trim());
+  document.getElementById('tf_ytHint').style.display = ytId ? 'block' : 'none';
+  document.getElementById('tf_startWrap').style.display = ytId ? 'block' : 'none';
+  if(ytId && !document.getElementById('tf_start').value){
+    const start = parseYouTubeStart(e.target.value.trim());
+    if(start) document.getElementById('tf_start').value = start;
+  }
+});
+
+function closeTrackForm(){
+  document.getElementById('trackForm').classList.remove('open');
+}
+
+document.getElementById('addUrlBtn').addEventListener('click', openTrackForm);
+document.getElementById('tf_cancel').addEventListener('click', closeTrackForm);
+
+document.getElementById('tf_save').addEventListener('click', async ()=>{
+  const url = document.getElementById('tf_url').value.trim();
+  if(!url){ toast('Please paste an audio or YouTube link'); return; }
+
+  const ytId = extractYouTubeId(url);
+  let newTrack;
+  if(ytId){
+    const startSeconds = parseInt(document.getElementById('tf_start').value, 10) || 0;
+    const endVal = document.getElementById('tf_end').value;
+    const endSeconds = endVal ? parseInt(endVal, 10) : 0;
+    if(endSeconds && endSeconds <= startSeconds){
+      toast('"End at" must be greater than "Start at"');
+      return;
+    }
+    toast('Fetching song details…');
+    const meta = await fetchYouTubeMeta(ytId);
+    newTrack = {title:meta.title, artist:meta.artist, type:'youtube', videoId:ytId, startSeconds, endSeconds};
+  }else{
+    newTrack = {title:fallbackTitleFromUrl(url), artist:'', type:'url', url};
+  }
+  try{
+    const id = await addTrack(slug, newTrack);
+    tracks.push(Object.assign({id}, newTrack));
+    renderTrackList();
+  }catch(err){
+    toast('Could not save — ' + (err.message || 'try signing out and back in'));
+    return;
+  }
+  closeTrackForm();
+  toast('Song added to your library');
+});
+
+/* ---------- Save / navigate ---------- */
+document.getElementById('saveBtn').addEventListener('click', async ()=>{
+  const next = readForm();
+  try{
+    await saveInvitation(slug, next);
+    data = next;
+    toast('Saved — the invitation is updated');
+  }catch(err){
+    toast('Save failed — ' + (err.message || 'try signing out and back in'));
+  }
+});
+
+document.getElementById('viewBtn').addEventListener('click', ()=>{
+  window.open('../../i/?slug=' + encodeURIComponent(slug), '_blank');
+});
+
+document.getElementById('logoutBtn').addEventListener('click', ()=> logoutAdmin());
+
+/* ---------- Auth + load ---------- */
+watchAuth(async (user)=>{
+  if(!user){
+    window.location.href = '../';
+    return;
+  }
+  if(!slug){
+    authScreen.style.display = 'none';
+    notFoundScreen.style.display = 'flex';
+    return;
+  }
+  data = await loadInvitation(slug);
+  if(!data){
+    authScreen.style.display = 'none';
+    notFoundScreen.style.display = 'flex';
+    return;
+  }
+  currentTrackId = data.currentTrackId;
+  tracks = await listTracks(slug);
+
+  authScreen.style.display = 'none';
+  dashContent.classList.add('open');
+  fillForm();
+  renderTrackList();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fbf2e2;
+    --cream-dark:#f3e4c8;
+    --gold:#b9892f;
+    --gold-light:#d8b25c;
+    --maroon:#8a1f3b;
+    --maroon-dark:#5f1327;
+    --ink:#4a3324;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#e8ddc9;
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+  }
+  .page{
+    width:100%;
+    max-width:460px;
+    background:var(--cream);
+    min-height:100vh;
+    position:relative;
+    box-shadow:0 0 60px rgba(0,0,0,.25);
+    overflow:hidden;
+  }
+  .state-msg{
+    padding:80px 30px;
+    text-align:center;
+    font-family:'Cinzel',serif;
+    color:var(--gold);
+    font-size:14px;
+    letter-spacing:1px;
+  }
+  section{
+    padding:48px 28px;
+    position:relative;
+    text-align:center;
+  }
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .script{
+    font-family:'Great Vibes', cursive;
+    color:var(--maroon);
+  }
+  .label{
+    font-family:'Cinzel',serif;
+    letter-spacing:3px;
+    font-size:12px;
+    color:var(--gold);
+    text-transform:uppercase;
+  }
+
+  .hero{
+    padding-top:40px;
+    background:radial-gradient(ellipse at top, #fff7e8 0%, var(--cream) 60%);
+  }
+  .hero-names{font-size:52px;line-height:1.15;margin:6px 0;}
+  .hero-amp{font-size:26px;color:var(--gold);margin:2px 0;}
+  .gate-svg{margin:18px auto 6px;display:block;}
+  .hero-sub{font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);margin-top:10px;}
+
+  .blessing-card{
+    border:1px solid var(--gold-light);
+    border-radius:50% / 14%;
+    padding:36px 22px 64px;
+    margin:0 4px;
+    background:rgba(255,255,255,.35);
+    position:relative;
+    overflow:visible;
+  }
+  .corner-floral{position:absolute;z-index:2;pointer-events:none;}
+  .corner-floral-tl{ top:-14px; left:-16px; }
+  .corner-floral-tr{ top:-14px; right:-16px; transform:scaleX(-1); }
+  .corner-floral-bl{ bottom:-14px; left:-16px; transform:scaleY(-1); }
+  .corner-floral-br{ bottom:-14px; right:-16px; transform:scale(-1,-1); }
+  .shloka{font-style:italic;font-size:15px;color:var(--maroon);line-height:1.7;}
+  .parents{font-weight:600;margin:14px 0 6px;font-size:17px;}
+  .blessing-text{font-size:16px;line-height:1.6;margin:8px 0 14px;}
+  .couple-names-mid{font-size:38px;margin:4px 0;}
+  .beloved{font-size:14px;letter-spacing:1px;margin-top:14px;}
+  .beloved-parents{font-weight:600;font-size:16px;}
+
+  .garden{height:120px;background:linear-gradient(var(--cream-dark), var(--cream));}
+
+  .date-section{background:var(--cream-dark);}
+  .hearts{display:flex;justify-content:center;gap:18px;margin:22px 0;}
+  .heart{
+    width:78px;height:78px;background:var(--maroon);
+    clip-path: path('M39 70C39 70 4 46 4 22C4 8 16 0 27 4C33 6 39 12 39 18C39 12 45 6 51 4C62 0 74 8 74 22C74 46 39 70 39 70Z');
+    display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;
+  }
+  .heart .num{font-family:'Cinzel',serif;font-size:20px;font-weight:600;}
+  .heart .cap{font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+  .date-copy{max-width:320px;margin:0 auto;line-height:1.7;font-size:16px;}
+
+  .frame{border:2px solid var(--gold);border-radius:16px;padding:30px 22px;margin:10px 4px;position:relative;}
+  .frame:before,.frame:after{content:"";position:absolute;width:16px;height:16px;border:2px solid var(--gold);top:-2px;left:-2px;border-right:none;border-bottom:none;}
+  .frame:after{left:auto;right:-2px;top:auto;bottom:-2px;border:2px solid var(--gold);border-left:none;border-top:none;}
+  .couple-grid{display:flex;gap:16px;margin-top:18px;}
+  .couple-card{flex:1;background:rgba(255,255,255,.5);border-radius:12px;padding:18px 10px;}
+  .couple-card .name{font-size:26px;}
+  .couple-card .rel{font-size:12px;color:var(--gold);letter-spacing:1px;}
+
+  .mandap-svg{display:block;margin:0 auto;}
+
+  .btn{
+    display:inline-block;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+    padding:13px 26px;border-radius:30px;border:1px solid var(--gold);color:var(--maroon-dark);background:#fff;cursor:pointer;text-decoration:none;
+  }
+  .hashtag-pill{
+    display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--gold-light);border-radius:30px;
+    padding:10px 20px;font-size:18px;color:var(--maroon);font-weight:600;margin-top:10px;cursor:pointer;
+  }
+  .hint{font-size:12px;color:#8a7a60;margin-top:8px;}
+
+  .welcome-card{background:linear-gradient(135deg,#f6d87a,#e8b84b);border-radius:16px;padding:26px 18px;margin-top:16px;color:var(--maroon-dark);}
+  .welcome-card .venue{font-size:24px;margin:6px 0;}
+  .welcome-card .addr{font-size:14px;line-height:1.5;}
+
+  .team-toggle{display:flex;gap:8px;justify-content:center;margin-top:18px;margin-bottom:16px;}
+  .team-toggle button{
+    flex:1;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:9px 4px;border-radius:20px;
+    border:1px solid var(--gold-light);background:#fff;color:var(--ink);cursor:pointer;
+  }
+  .team-toggle button.active{background:var(--maroon);color:#fff;border-color:var(--maroon);}
+  textarea{
+    width:100%;border:1px solid var(--gold-light);border-radius:10px;padding:12px;font-family:'Cormorant Garamond',serif;
+    font-size:15px;resize:vertical;min-height:70px;background:#fff;
+  }
+  .send-btn{
+    width:100%;margin-top:12px;background:var(--maroon);color:#fff;border:none;padding:14px;border-radius:30px;
+    font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  }
+  .contact-card{
+    margin-top:22px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.5);
+    border-radius:12px;padding:14px 16px;text-align:left;
+  }
+  .contact-card .cname{font-weight:600;font-size:16px;}
+  .contact-card .crel{font-size:12px;color:var(--gold);}
+  .icon-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--gold-light);background:#fff;display:inline-flex;
+    align-items:center;justify-content:center;margin-left:8px;text-decoration:none;color:var(--maroon);
+  }
+
+  .countdown-section{background:var(--maroon-dark);color:var(--cream);}
+  .countdown-section .label{color:var(--gold-light);}
+  .countdown-section h2{font-family:'Cinzel',serif;font-size:22px;font-weight:600;}
+  .countdown-copy{font-size:15px;line-height:1.6;opacity:.9;}
+  .timer{display:flex;justify-content:center;gap:14px;margin:24px 0;}
+  .timer .cell{width:60px;}
+  .timer .cell .n{
+    font-family:'Cinzel',serif;font-size:24px;background:rgba(255,255,255,.08);border:1px solid rgba(216,178,92,.5);
+    border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;
+  }
+  .timer .cell .l{font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:6px;color:var(--gold-light);}
+  .crafted{font-size:12px;color:var(--gold-light);margin-top:10px;}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+    padding:10px 20px;border-radius:30px;font-size:14px;opacity:0;transition:opacity .3s, transform .3s;z-index:200;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .music-fab{
+    position:fixed;bottom:18px;right:18px;width:50px;height:50px;border-radius:50%;background:var(--maroon);
+    display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:60;
+  }
+  .eq-bars{display:flex;align-items:flex-end;gap:3px;height:16px;}
+  .eq-bars span{display:block;width:3px;background:#fff;border-radius:2px;height:6px;}
+  .eq-bars.playing span{animation: eq .9s ease-in-out infinite;}
+  .eq-bars.playing span:nth-child(2){animation-delay:.2s;}
+  .eq-bars.playing span:nth-child(3){animation-delay:.4s;}
+  @keyframes eq{0%,100%{height:5px;}50%{height:16px;}}
+  .music-fab .play-icon{display:none;color:#fff;font-size:16px;margin-left:2px;}
+  .music-fab.paused .eq-bars{display:none;}
+  .music-fab.paused .play-icon{display:block;}
+
+  .print-only{display:none;}
+  .print-qr-block{text-align:center;margin-top:10px;}
+  .print-qr-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;color:var(--gold-light);margin-bottom:10px;}
+  .print-qr-img{display:block;margin:0 auto 8px;background:#fff;padding:6px;border-radius:8px;}
+  .print-qr-url{font-size:11px;color:var(--gold-light);word-break:break-all;}
+
+  @media print{
+    @page{ margin:10mm; }
+    body{ background:#fff; display:block; }
+    .page{ max-width:100%; box-shadow:none; margin:0 auto; }
+    .no-print{ display:none !important; }
+    .print-only{ display:block !important; }
+    section, .garden{ break-inside:avoid; page-break-inside:avoid; }
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page" id="pageRoot"><div class="state-msg">Loading invitation…</div></div>
+
+<audio id="bgAudio" loop preload="auto"></audio>
+<div id="ytPlayerContainer" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;"></div>
+<div class="music-fab no-print" id="musicFab" title="Play/pause music">
+  <div class="eq-bars" id="eqBars"><span></span><span></span><span></span></div>
+  <div class="play-icon">&#9658;</div>
+</div>
+
+<div class="toast no-print" id="toast"></div>
+
+<script type="module">
+import {
+  MONTHS, getSlugFromLocation, watchInvitation, watchTracks,
+  extractYouTubeId
+} from '/firebase-shared.js';
+
+const slug = getSlugFromLocation('/i/');
+let data = null;
+let tracks = [];
+let selectedTeam = "Team Bride";
+let observer = null;
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function namesInOrder(d){
+  return d.nameOrder === 'groom'
+    ? [d.groomName, 'The Groom', d.brideName, 'The Bride']
+    : [d.brideName, 'The Bride', d.groomName, 'The Groom'];
+}
+
+function parentsInOrder(d){
+  return d.parentsOrder === 'groom'
+    ? [d.groomMother, d.groomFather, 'Beloved daughter of', d.brideMother, d.brideFather]
+    : [d.brideMother, d.brideFather, 'Beloved son of', d.groomMother, d.groomFather];
+}
+
+const TEMPLATES = {
+  hero: (d) => {
+    const dt = new Date(d.weddingDate + 'T00:00:00');
+    const dateLine = (dt.getDate()+'').padStart(2,'0') + ' ' + ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'][dt.getMonth()] + ' ' + dt.getFullYear();
+    const [n1,,n2] = namesInOrder(d);
+    return `
+    <section class="hero reveal" style="padding-bottom:12px;">
+      <div class="label">The Wedding Of</div>
+      <div class="hero-names script">${esc(n1)}</div>
+      <div class="hero-amp">&amp;</div>
+      <div class="hero-names script">${esc(n2)}</div>
+      <svg class="gate-svg" width="300" height="168" viewBox="0 0 300 168">
+        <defs>
+          <symbol id="peacock" viewBox="0 0 70 90">
+            <path d="M35 55 C18 48 8 28 12 8" stroke="#8a1f3b" stroke-width="1.6" fill="none"/>
+            <circle cx="12" cy="8" r="3.2" fill="#b9892f"/>
+            <path d="M35 55 C26 40 25 20 30 2" stroke="#8a1f3b" stroke-width="1.6" fill="none"/>
+            <circle cx="30" cy="2" r="3.2" fill="#b9892f"/>
+            <path d="M35 55 C44 40 45 20 40 2" stroke="#8a1f3b" stroke-width="1.6" fill="none"/>
+            <circle cx="40" cy="2" r="3.2" fill="#b9892f"/>
+            <path d="M35 55 C52 48 62 28 58 8" stroke="#8a1f3b" stroke-width="1.6" fill="none"/>
+            <circle cx="58" cy="8" r="3.2" fill="#b9892f"/>
+            <ellipse cx="32" cy="66" rx="9" ry="14" fill="#b9892f" transform="rotate(-8 32 66)"/>
+            <path d="M27 56 C21 48 17 40 20 30 C22 24 26 21 29 20" stroke="#b9892f" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <circle cx="29" cy="18" r="4.5" fill="#b9892f"/>
+            <path d="M33 17 L38 16 L33 20 Z" fill="#8a1f3b"/>
+            <path d="M28 14 L26 8 M29 14 L29 7 M30 14 L32 8" stroke="#b9892f" stroke-width="1.3"/>
+            <path d="M29 78 L26 88 M35 78 L38 88" stroke="#8a1f3b" stroke-width="1.6"/>
+          </symbol>
+        </defs>
+        <line x1="15" y1="150" x2="285" y2="150" stroke="#d8b25c" stroke-width="1"/>
+        <g fill="#8a1f3b" opacity=".8">
+          <circle cx="95" cy="151" r="2.5"/><circle cx="108" cy="151" r="2.5"/>
+          <circle cx="192" cy="151" r="2.5"/><circle cx="205" cy="151" r="2.5"/>
+        </g>
+        <g fill="none" stroke="#b9892f" stroke-width="1.4">
+          <rect x="118" y="138" width="64" height="12" rx="1.5"/>
+          <path d="M136 138 L136 112 Q150 98 164 112 L164 138"/>
+          <path d="M123 112 L177 112 L170 92 L130 92 Z"/>
+          <path d="M131 92 L169 92 L163 74 L137 74 Z"/>
+          <path d="M138 74 L162 74 L157 58 L143 58 Z"/>
+          <path d="M145 58 L155 58 L151 46 L149 46 Z"/>
+          <line x1="150" y1="46" x2="150" y2="30"/>
+        </g>
+        <circle cx="150" cy="27" r="2.6" fill="#8a1f3b"/>
+        <path d="M150 33 L160 37 L150 41 Z" fill="#d8b25c" opacity=".85"/>
+        <use href="#peacock" x="30" y="68" width="60" height="82"/>
+        <g transform="translate(300,0) scale(-1,1)">
+          <use href="#peacock" x="30" y="68" width="60" height="82"/>
+        </g>
+      </svg>
+      <div class="hero-sub">${dateLine}</div>
+    </section>`;
+  },
+
+  blessing: (d) => {
+    const [n1,,n2] = namesInOrder(d);
+    const [topMother, topFather, belovedLabel, botMother, botFather] = parentsInOrder(d);
+    return `
+    <section class="blessing reveal" style="padding-top:12px;">
+      <div class="blessing-card">
+        <svg class="corner-floral corner-floral-tl" width="60" height="60" viewBox="0 0 80 80">
+          <defs>
+            <g id="cornerBouquet">
+              <path d="M10 70 C5 50 15 30 35 20" stroke="#7d8f5f" stroke-width="2" fill="none"/>
+              <ellipse cx="20" cy="45" rx="10" ry="4" fill="#7d8f5f" transform="rotate(-50 20 45)"/>
+              <ellipse cx="30" cy="28" rx="9" ry="4" fill="#7d8f5f" transform="rotate(-35 30 28)"/>
+              <g transform="translate(15,15)">
+                <circle cx="0" cy="-6" r="5" fill="#8a1f3b"/>
+                <circle cx="-5" cy="2" r="5" fill="#8a1f3b"/>
+                <circle cx="5" cy="2" r="5" fill="#8a1f3b"/>
+                <circle cx="0" cy="6" r="5" fill="#8a1f3b"/>
+                <circle cx="0" cy="0" r="4" fill="#d8b25c"/>
+              </g>
+              <g transform="translate(38,10) scale(0.8)">
+                <circle cx="0" cy="-6" r="5" fill="#b9892f"/>
+                <circle cx="-5" cy="2" r="5" fill="#b9892f"/>
+                <circle cx="5" cy="2" r="5" fill="#b9892f"/>
+                <circle cx="0" cy="6" r="5" fill="#b9892f"/>
+                <circle cx="0" cy="0" r="4" fill="#fdeedb"/>
+              </g>
+              <g transform="translate(8,38) scale(0.7)">
+                <circle cx="0" cy="-6" r="5" fill="#8a1f3b"/>
+                <circle cx="-5" cy="2" r="5" fill="#8a1f3b"/>
+                <circle cx="5" cy="2" r="5" fill="#8a1f3b"/>
+                <circle cx="0" cy="6" r="5" fill="#8a1f3b"/>
+                <circle cx="0" cy="0" r="4" fill="#d8b25c"/>
+              </g>
+              <circle cx="45" cy="32" r="3" fill="#8a1f3b"/>
+            </g>
+          </defs>
+          <use href="#cornerBouquet"/>
+        </svg>
+        <svg class="corner-floral corner-floral-tr" width="60" height="60" viewBox="0 0 80 80"><use href="#cornerBouquet"/></svg>
+        <svg class="corner-floral corner-floral-bl" width="60" height="60" viewBox="0 0 80 80"><use href="#cornerBouquet"/></svg>
+        <svg class="corner-floral corner-floral-br" width="60" height="60" viewBox="0 0 80 80"><use href="#cornerBouquet"/></svg>
+        <img src="/assets/ganpati.png" alt="Shri Ganeshay Namah" width="46" height="72" style="display:block;margin:0 auto 12px;object-fit:contain;">
+        <div class="shloka">
+          Vakratunda Mahakaya Suryakoti Samaprabha<br>
+          Nirvighnam Kuru Me Deva Sarva-Kaaryeshu Sarvada
+        </div>
+        <div class="parents">${esc(topMother)} &amp; ${esc(topFather)}</div>
+        <div class="blessing-text">${esc(d.blessingText)}</div>
+        <div class="couple-names-mid script">${esc(n1)}</div>
+        <div class="hero-amp">and</div>
+        <div class="couple-names-mid script">${esc(n2)}</div>
+        <div class="beloved">${belovedLabel}</div>
+        <div class="beloved-parents">${esc(botMother)} &amp; ${esc(botFather)}</div>
+      </div>
+    </section>
+    <div class="garden"></div>`;
+  },
+
+  dateToRemember: (d) => {
+    const dt = new Date(d.weddingDate + 'T00:00:00');
+    return `
+    <section class="date-section reveal">
+      <div class="label">A Date To Remember</div>
+      <div class="hearts">
+        <div class="heart"><div class="num">${dt.getDate()}</div><div class="cap">Day</div></div>
+        <div class="heart"><div class="num">${MONTHS[dt.getMonth()]}</div><div class="cap">Month</div></div>
+        <div class="heart"><div class="num">${dt.getFullYear()}</div><div class="cap">Year</div></div>
+      </div>
+      <div class="date-copy">Mark your calendars — our forever begins on this joyous day, and we would be honoured to have you by our side.</div>
+    </section>`;
+  },
+
+  meetCouple: (d) => {
+    const [n1, r1, n2, r2] = namesInOrder(d);
+    const title = d.nameOrder === 'groom' ? 'Groom &amp; Bride' : 'Bride &amp; Groom';
+    return `
+    <section class="meet reveal">
+      <div class="label">Meet the</div>
+      <div class="hero-amp" style="font-size:30px;">${title}</div>
+      <div class="frame">
+        <div style="line-height:1.8;font-size:16px;">${esc(d.coupleMsg)}</div>
+        <div class="couple-grid">
+          <div class="couple-card">
+            <div class="name script">${esc(n1)}</div>
+            <div class="rel">${r1}</div>
+          </div>
+          <div class="couple-card">
+            <div class="name script">${esc(n2)}</div>
+            <div class="rel">${r2}</div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  },
+
+  mandap: () => `
+    <section class="reveal" style="padding-top:0;">
+      <svg class="mandap-svg" width="280" height="186" viewBox="0 0 280 186">
+        <defs>
+          <symbol id="flower" viewBox="0 0 10 10">
+            <circle cx="5" cy="2" r="2" fill="#8a1f3b"/>
+            <circle cx="2" cy="5" r="2" fill="#8a1f3b"/>
+            <circle cx="8" cy="5" r="2" fill="#8a1f3b"/>
+            <circle cx="5" cy="8" r="2" fill="#8a1f3b"/>
+            <circle cx="5" cy="5" r="1.7" fill="#d8b25c"/>
+          </symbol>
+        </defs>
+        <rect x="22" y="40" width="9" height="118" fill="#b9892f"/>
+        <path d="M18 40 L35 40 L26.5 30 Z" fill="#b9892f"/>
+        <rect x="249" y="40" width="9" height="118" fill="#b9892f"/>
+        <path d="M245 40 L262 40 L253.5 30 Z" fill="#b9892f"/>
+        <path d="M26 42 Q140 -14 254 42" fill="none" stroke="#8a1f3b" stroke-width="3"/>
+        <use href="#flower" x="22" y="35" width="13" height="13"/>
+        <use href="#flower" x="52" y="12" width="13" height="13"/>
+        <use href="#flower" x="86" y="-4" width="13" height="13"/>
+        <use href="#flower" x="122" y="-13" width="13" height="13"/>
+        <use href="#flower" x="156" y="-13" width="13" height="13"/>
+        <use href="#flower" x="190" y="-4" width="13" height="13"/>
+        <use href="#flower" x="224" y="12" width="13" height="13"/>
+        <use href="#flower" x="252" y="35" width="13" height="13"/>
+        <path d="M90 44 Q90 58 90 66" stroke="#b9892f" stroke-width="1.2" fill="none"/>
+        <circle cx="90" cy="70" r="3.4" fill="#8a1f3b"/>
+        <path d="M140 36 Q140 52 140 62" stroke="#b9892f" stroke-width="1.2" fill="none"/>
+        <circle cx="140" cy="66" r="3.4" fill="#8a1f3b"/>
+        <path d="M190 44 Q190 58 190 66" stroke="#b9892f" stroke-width="1.2" fill="none"/>
+        <circle cx="190" cy="70" r="3.4" fill="#8a1f3b"/>
+        <rect x="44" y="76" width="192" height="82" fill="#fdeedb" stroke="#b9892f" stroke-width="1.5"/>
+        <path d="M44 76 L236 76" stroke="#d8b25c" stroke-width="1"/>
+        <rect x="108" y="108" width="64" height="44" fill="#8a1f3b" rx="4"/>
+        <rect x="104" y="100" width="72" height="10" fill="#b9892f" rx="3"/>
+        <path d="M14 158 L14 172 L38 172 L38 158 Z" fill="#b9892f"/>
+        <use href="#flower" x="10" y="140" width="14" height="14"/>
+        <use href="#flower" x="22" y="134" width="14" height="14"/>
+        <path d="M242 158 L242 172 L266 172 L266 158 Z" fill="#b9892f"/>
+        <use href="#flower" x="238" y="140" width="14" height="14"/>
+        <use href="#flower" x="250" y="134" width="14" height="14"/>
+        <line x1="8" y1="172" x2="272" y2="172" stroke="#d8b25c" stroke-width="1"/>
+      </svg>
+    </section>`,
+
+  addToCalendar: () => `
+    <section class="reveal no-print" style="padding:6px 28px 10px;">
+      <a class="btn" id="calBtn" href="#">+ Add To Calendar</a>
+      <div style="margin-top:12px;">
+        <button class="btn" id="pdfBtn" type="button">&#8681; Save as PDF</button>
+      </div>
+    </section>`,
+
+  hashtag: (d) => `
+    <section class="reveal" style="padding:10px 28px;">
+      <div class="label">Our Hashtag</div>
+      <div class="hashtag-pill" id="hashtagPill">${esc(d.hashtag)} ⧉</div>
+      <div class="hint">Tap to copy &amp; use it in all your posts!</div>
+    </section>`,
+
+  welcome: (d) => `
+    <section class="reveal" style="padding-top:10px;padding-bottom:12px;">
+      <div class="label" style="font-size:16px;color:var(--maroon);font-family:'Cinzel',serif;">We look forward to welcoming you</div>
+      <div class="welcome-card">
+        <div class="label" style="color:var(--maroon-dark);">Venue</div>
+        <div class="venue">${esc(d.venueName)}</div>
+        <div class="addr">${esc(d.venueAddr)}</div>
+      </div>
+    </section>`,
+
+  wishes: (d) => `
+    <section class="reveal" style="padding-top:4px;">
+      <div class="label">A Little Note For Us</div>
+      <div class="team-toggle no-print" id="teamToggle">
+        <button data-team="Team Bride" class="active">Team Bride</button>
+        <button data-team="Team Groom">Team Groom</button>
+        <button data-team="Team Both">Team Both</button>
+      </div>
+      <textarea class="no-print" id="wishText" placeholder="Share a wish, a memory, or just say hi!"></textarea>
+      <button class="send-btn no-print" id="sendWishBtn">Send Your Wishes</button>
+      <div class="contact-card">
+        <div>
+          <div class="cname">${esc(d.contactName)}</div>
+          <div class="crel">${esc(d.contactRel)}</div>
+        </div>
+        <div>
+          <a class="icon-btn" id="callLink" href="tel:${esc(d.contactPhone)}" title="Call">📞</a>
+          <a class="icon-btn" id="msgLink" href="https://wa.me/${d.contactPhone.replace(/[^0-9]/g,'')}" title="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.47 19.3c-.37-.18-2.2-1.08-2.54-1.2-.34-.12-.59-.18-.84.18-.25.37-.96 1.2-1.18 1.44-.22.25-.43.28-.8.1-.37-.18-1.57-.58-2.99-1.84-1.1-.98-1.85-2.2-2.06-2.57-.22-.37-.02-.57.16-.75.17-.17.37-.43.55-.65.18-.22.25-.37.37-.62.12-.25.06-.46-.03-.65-.1-.18-.84-2.02-1.15-2.77-.3-.73-.6-.63-.84-.64h-.72c-.25 0-.65.09-.99.46-.34.37-1.3 1.27-1.3 3.1s1.33 3.6 1.52 3.85c.18.25 2.62 4 6.35 5.6.89.38 1.58.61 2.12.78.89.28 1.7.24 2.34.15.71-.1 2.2-.9 2.51-1.76.31-.87.31-1.6.22-1.76-.09-.15-.34-.25-.71-.43z" fill="#fff"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>`,
+
+  countdown: () => `
+    <section class="countdown-section reveal">
+      <div class="label">Counting Down To Our</div>
+      <h2>Big Day</h2>
+      <div class="countdown-copy">Our families are delighted that you will join us for one of the happiest days of our lives</div>
+      <div class="timer no-print">
+        <div class="cell"><div class="n" id="cdDays">00</div><div class="l">Days</div></div>
+        <div class="cell"><div class="n" id="cdHours">00</div><div class="l">Hours</div></div>
+        <div class="cell"><div class="n" id="cdMins">00</div><div class="l">Minutes</div></div>
+        <div class="cell"><div class="n" id="cdSecs">00</div><div class="l">Seconds</div></div>
+      </div>
+      <div class="print-only print-qr-block">
+        <div class="print-qr-label">Scan for the live invitation — countdown &amp; music</div>
+        <img id="printQr" class="print-qr-img" alt="QR code to the live invitation" width="120" height="120">
+        <div id="printQrUrl" class="print-qr-url"></div>
+      </div>
+      <svg class="footer-svg" width="260" height="130" viewBox="0 0 260 130" style="display:block;margin:20px auto 4px;">
+        <defs>
+          <symbol id="lotus" viewBox="0 0 30 20">
+            <ellipse cx="15" cy="15" rx="13" ry="3.6" fill="#4f6b4a" opacity=".55"/>
+            <path d="M15 14 C10 10 8 4 15 2 C22 4 20 10 15 14 Z" fill="#d8b25c"/>
+            <path d="M15 14 C9 12 5 6 10 2" stroke="#d8b25c" stroke-width="1" fill="none"/>
+            <path d="M15 14 C21 12 25 6 20 2" stroke="#d8b25c" stroke-width="1" fill="none"/>
+          </symbol>
+        </defs>
+        <ellipse cx="78" cy="52" rx="25" ry="23" fill="#d8b25c" opacity=".95"/>
+        <ellipse cx="76" cy="54" rx="16" ry="14" fill="#9a7324" opacity=".4"/>
+        <circle cx="106" cy="52" r="18" fill="#d8b25c"/>
+        <ellipse cx="128" cy="62" rx="16" ry="18" fill="#d8b25c"/>
+        <ellipse cx="156" cy="75" rx="48" ry="30" fill="#d8b25c"/>
+        <path d="M99 64 C94 77 89 91 90 103 C90 109 96 112 100 108 C104 104 102 97 104 89 C106 81 104 72 99 64 Z" fill="#d8b25c"/>
+        <path d="M100 70 C96 74 94 78 97 81" stroke="#f3e6c6" stroke-width="2" fill="none"/>
+        <circle cx="109" cy="47" r="2" fill="#5f1327"/>
+        <rect x="126" y="98" width="12" height="30" rx="3" fill="#d8b25c"/>
+        <rect x="148" y="100" width="12" height="30" rx="3" fill="#d8b25c"/>
+        <rect x="180" y="98" width="12" height="30" rx="3" fill="#d8b25c"/>
+        <rect x="200" y="100" width="12" height="30" rx="3" fill="#d8b25c"/>
+        <path d="M204 66 C216 70 220 80 217 90" stroke="#d8b25c" stroke-width="2" fill="none"/>
+        <circle cx="217" cy="92" r="2.4" fill="#d8b25c"/>
+        <path d="M120 50 Q156 36 192 54 L192 66 Q156 54 120 62 Z" fill="#8a1f3b"/>
+        <circle cx="134" cy="56" r="2" fill="#d8b25c"/>
+        <circle cx="156" cy="52" r="2" fill="#d8b25c"/>
+        <circle cx="178" cy="56" r="2" fill="#d8b25c"/>
+        <path d="M5 112 Q22 107 40 112 T75 112 T110 112 T145 112 T180 112 T215 112 T255 112" fill="none" stroke="#d8b25c" stroke-width="1" opacity=".7"/>
+        <use href="#lotus" x="14" y="104" width="26" height="18"/>
+        <use href="#lotus" x="200" y="100" width="30" height="20"/>
+        <use href="#lotus" x="225" y="108" width="20" height="14"/>
+      </svg>
+      <div class="crafted">Made with ❤ for our special day</div>
+    </section>`
+};
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function bindEvents(){
+  const hashtagPill = document.getElementById('hashtagPill');
+  if(hashtagPill){
+    hashtagPill.addEventListener('click', ()=>{
+      navigator.clipboard.writeText(data.hashtag).then(()=> toast('Hashtag copied!'))
+        .catch(()=> toast(data.hashtag));
+    });
+  }
+
+  const pdfBtn = document.getElementById('pdfBtn');
+  if(pdfBtn){
+    pdfBtn.addEventListener('click', ()=>{
+      toast('Opening print dialog — choose "Save as PDF"');
+      setTimeout(()=> window.print(), 300);
+    });
+  }
+
+  const printQr = document.getElementById('printQr');
+  const printQrUrl = document.getElementById('printQrUrl');
+  if(printQr){
+    const pageUrl = window.location.href;
+    printQr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=90-19-55&bgcolor=255-255-255&data=' + encodeURIComponent(pageUrl);
+    if(printQrUrl) printQrUrl.textContent = pageUrl;
+  }
+
+  const teamToggle = document.getElementById('teamToggle');
+  if(teamToggle){
+    teamToggle.addEventListener('click', (e)=>{
+      if(e.target.tagName !== 'BUTTON') return;
+      teamToggle.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      selectedTeam = e.target.dataset.team;
+    });
+  }
+
+  const sendWishBtn = document.getElementById('sendWishBtn');
+  if(sendWishBtn){
+    sendWishBtn.addEventListener('click', ()=>{
+      const wishText = document.getElementById('wishText');
+      const msg = wishText.value.trim();
+      if(!msg){ toast('Write a little wish first 💛'); return; }
+      const text = encodeURIComponent('[' + selectedTeam + '] ' + msg);
+      const phone = data.contactPhone.replace(/[^0-9]/g,'');
+      if(phone){
+        window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+      }
+      wishText.value = '';
+      toast('Thank you for your wishes!');
+    });
+  }
+
+  const calBtn = document.getElementById('calBtn');
+  if(calBtn){
+    calBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const dt = new Date(data.weddingDate + 'T10:00:00');
+      const end = new Date(dt.getTime() + 4*60*60*1000);
+      const fmt = dd => dd.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+      const ics = [
+        'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+        'SUMMARY:' + data.brideName + ' & ' + data.groomName + '\'s Wedding',
+        'DTSTART:' + fmt(dt),
+        'DTEND:' + fmt(end),
+        'LOCATION:' + data.venueName + ', ' + data.venueAddr,
+        'DESCRIPTION:' + data.coupleMsg,
+        'END:VEVENT','END:VCALENDAR'
+      ].join('\r\n');
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'wedding-invite.ics';
+      a.click();
+    });
+  }
+}
+
+function setupObserver(){
+  if(observer) observer.disconnect();
+  observer = new IntersectionObserver((entries)=>{
+    entries.forEach(ent=>{
+      if(ent.isIntersecting) ent.target.classList.add('in');
+    });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+}
+
+function tickCountdown(){
+  const cdDays = document.getElementById('cdDays');
+  if(!cdDays || !data) return;
+  const target = new Date(data.weddingDate + 'T00:00:00').getTime();
+  const now = Date.now();
+  let diff = Math.max(0, target - now);
+  const days = Math.floor(diff / 86400000); diff -= days*86400000;
+  const hours = Math.floor(diff / 3600000); diff -= hours*3600000;
+  const mins = Math.floor(diff / 60000); diff -= mins*60000;
+  const secs = Math.floor(diff / 1000);
+  cdDays.textContent = String(days).padStart(2,'0');
+  document.getElementById('cdHours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cdMins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('cdSecs').textContent = String(secs).padStart(2,'0');
+}
+setInterval(tickCountdown, 1000);
+
+function render(){
+  const root = document.getElementById('pageRoot');
+  if(!data){
+    root.innerHTML = '<div class="state-msg">This invitation could not be found.<br>Please double-check the link.</div>';
+    return;
+  }
+  root.innerHTML = data.sectionOrder.map(id => TEMPLATES[id] ? TEMPLATES[id](data) : '').join('');
+  bindEvents();
+  setupObserver();
+  tickCountdown();
+}
+
+/* ---------- Background music playback ---------- */
+let bgAudio, musicFab, eqBars, ytContainer;
+let gestureBound = false;
+let playerType = null;
+let ytPlayer = null;
+let ytApiPromise = null;
+let ytLoopInterval = null;
+let currentTrackLoadedId = null;
+
+function setPlayingUI(isPlaying){
+  if(!musicFab) return;
+  musicFab.classList.toggle('paused', !isPlaying);
+  eqBars.classList.toggle('playing', isPlaying);
+}
+
+function playCurrent(){
+  if(playerType === 'youtube' && ytPlayer && ytPlayer.playVideo){
+    ytPlayer.playVideo();
+    return Promise.resolve();
+  }
+  if(playerType === 'audio' && bgAudio){
+    return bgAudio.play();
+  }
+  return Promise.reject();
+}
+
+function pauseCurrent(){
+  if(playerType === 'youtube' && ytPlayer && ytPlayer.pauseVideo){
+    ytPlayer.pauseVideo();
+  }else if(playerType === 'audio' && bgAudio){
+    bgAudio.pause();
+  }
+}
+
+function isPausedCurrent(){
+  if(playerType === 'youtube' && ytPlayer && ytPlayer.getPlayerState){
+    return ytPlayer.getPlayerState() !== 1;
+  }
+  if(playerType === 'audio' && bgAudio){
+    return bgAudio.paused;
+  }
+  return true;
+}
+
+function bindGestureFallback(){
+  if(gestureBound) return;
+  gestureBound = true;
+  const tryStart = ()=>{
+    const p = playCurrent();
+    if(p && p.then) p.then(()=> setPlayingUI(true)).catch(()=>{});
+    else setPlayingUI(true);
+  };
+  document.addEventListener('touchstart', tryStart, {once:true, passive:true});
+  document.addEventListener('click', tryStart, {once:true});
+  document.addEventListener('keydown', tryStart, {once:true});
+}
+
+function loadYouTubeAPI(){
+  if(ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve)=>{
+    if(window.YT && window.YT.Player){ resolve(); return; }
+    const existing = document.getElementById('ytIframeApiScript');
+    if(!existing){
+      const tag = document.createElement('script');
+      tag.id = 'ytIframeApiScript';
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+    window.onYouTubeIframeAPIReady = ()=> resolve();
+  });
+  return ytApiPromise;
+}
+
+function startYouTubeTrack(track){
+  playerType = 'youtube';
+  bgAudio.pause();
+  bgAudio.removeAttribute('src');
+
+  const loopStart = track.startSeconds || 0;
+  const hasCustomEnd = !!(track.endSeconds && track.endSeconds > loopStart);
+
+  loadYouTubeAPI().then(()=>{
+    if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
+    if(ytLoopInterval){ clearInterval(ytLoopInterval); ytLoopInterval = null; }
+    ytContainer.innerHTML = '<div id="ytPlayerSlot"></div>';
+    const playerVars = {
+      autoplay:1, controls:0, disablekb:1, fs:0, modestbranding:1, playsinline:1,
+      start: loopStart
+    };
+    if(hasCustomEnd) playerVars.end = track.endSeconds;
+
+    // Manual restart-on-end instead of YouTube's native loop/playlist params,
+    // which can silently fail to restart after autoplay throttling.
+    let restarting = false;
+    const restart = ()=>{
+      if(restarting) return;
+      restarting = true;
+      ytPlayer.pauseVideo();
+      ytPlayer.seekTo(loopStart, true);
+      ytPlayer.playVideo();
+      setTimeout(()=>{ restarting = false; }, 500);
+    };
+
+    ytPlayer = new YT.Player('ytPlayerSlot', {
+      videoId: track.videoId,
+      playerVars,
+      events:{
+        onReady: (e)=>{
+          e.target.playVideo();
+          setTimeout(()=>{
+            if(isPausedCurrent()){ setPlayingUI(false); bindGestureFallback(); }
+          }, 1000);
+        },
+        onStateChange: (e)=>{
+          if(e.data === YT.PlayerState.PLAYING) setPlayingUI(true);
+          if(e.data === YT.PlayerState.PAUSED) setPlayingUI(false);
+          if(e.data === YT.PlayerState.ENDED) restart();
+        }
+      }
+    });
+
+    if(hasCustomEnd){
+      ytLoopInterval = setInterval(()=>{
+        if(!ytPlayer || !ytPlayer.getCurrentTime) return;
+        if(ytPlayer.getCurrentTime() >= track.endSeconds) restart();
+      }, 400);
+    }
+  });
+}
+
+function startAudioTrack(src){
+  playerType = 'audio';
+  if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
+  if(ytLoopInterval){ clearInterval(ytLoopInterval); ytLoopInterval = null; }
+  bgAudio.src = src;
+  const playAttempt = bgAudio.play();
+  if(playAttempt && playAttempt.then){
+    playAttempt.then(()=> setPlayingUI(true)).catch(()=>{
+      setPlayingUI(false);
+      bindGestureFallback();
+    });
+  }
+}
+
+function applyCurrentTrack(){
+  const trackId = data ? data.currentTrackId : null;
+  const track = tracks.find(t => t.id === trackId);
+
+  if(!track){
+    musicFab.style.display = 'none';
+    playerType = null;
+    bgAudio.pause();
+    bgAudio.removeAttribute('src');
+    if(ytPlayer){ try{ ytPlayer.destroy(); }catch(e){} ytPlayer = null; }
+    if(ytLoopInterval){ clearInterval(ytLoopInterval); ytLoopInterval = null; }
+    currentTrackLoadedId = null;
+    return;
+  }
+
+  if(currentTrackLoadedId === track.id) return;
+  currentTrackLoadedId = track.id;
+
+  musicFab.style.display = 'flex';
+  gestureBound = false;
+
+  if(track.type === 'youtube'){
+    startYouTubeTrack(track);
+  }else{
+    startAudioTrack(track.url);
+  }
+}
+
+function initMusic(){
+  bgAudio = document.getElementById('bgAudio');
+  musicFab = document.getElementById('musicFab');
+  eqBars = document.getElementById('eqBars');
+  ytContainer = document.getElementById('ytPlayerContainer');
+
+  musicFab.onclick = ()=>{
+    if(isPausedCurrent()){
+      const p = playCurrent();
+      if(p && p.then) p.then(()=> setPlayingUI(true)).catch(()=>{});
+      else setPlayingUI(true);
+    }else{
+      pauseCurrent();
+      setPlayingUI(false);
+    }
+  };
+}
+
+if(!slug){
+  render();
+}else{
+  initMusic();
+  watchInvitation(slug, (d)=>{
+    data = d;
+    render();
+    applyCurrentTrack();
+  });
+  watchTracks(slug, (t)=>{
+    tracks = t;
+    applyCurrentTrack();
+  });
+}
+</script>
+
+</body>
+</html>
