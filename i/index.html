@@ -25,6 +25,11 @@
     display:flex;
     justify-content:center;
   }
+  .page-wrap{
+    position:relative;
+    width:100%;
+    max-width:460px;
+  }
   .page{
     width:100%;
     max-width:460px;
@@ -49,13 +54,59 @@
   }
   .reveal{
     opacity:0;
-    transform:translateY(24px);
-    transition:opacity .8s ease, transform .8s ease;
+    transform:translateY(32px) scale(.97);
+    transition:opacity .9s cubic-bezier(.2,.7,.3,1), transform .9s cubic-bezier(.2,.7,.3,1);
   }
   .reveal.in{
     opacity:1;
-    transform:translateY(0);
+    transform:translateY(0) scale(1);
   }
+
+  @keyframes gentleFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+  }
+  @keyframes gentleSway{
+    0%,100%{ transform:rotate(-2.5deg); }
+    50%{ transform:rotate(2.5deg); }
+  }
+  @keyframes softPulse{
+    0%,100%{ transform:scale(1); opacity:1; }
+    50%{ transform:scale(1.07); opacity:.85; }
+  }
+  @keyframes shimmerText{
+    0%,100%{ text-shadow:0 0 0 rgba(216,178,92,0); }
+    50%{ text-shadow:0 0 14px rgba(216,178,92,.55); }
+  }
+  @keyframes twinkleFade{
+    0%,100%{ opacity:.55; transform:scale(.92); }
+    50%{ opacity:1; transform:scale(1.08); }
+  }
+  @keyframes petalFall{
+    0%{ transform:translateY(-30px) rotate(0deg); opacity:0; }
+    10%{ opacity:.9; }
+    90%{ opacity:.7; }
+    100%{ transform:translateY(640px) rotate(360deg); opacity:0; }
+  }
+  @keyframes heartBeat{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.08); }
+  }
+  @keyframes popIn{
+    0%{ opacity:0; transform:scale(.6) translateY(16px); }
+    70%{ opacity:1; transform:scale(1.05) translateY(-2px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+
+  .petal-layer{
+    position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:5;
+  }
+  .petal{
+    position:absolute; top:-20px; font-size:14px; line-height:1; opacity:.75;
+    animation:petalFall linear infinite;
+    will-change:transform, opacity;
+  }
+  @media print{ .petal-layer{ display:none !important; } }
   .script{
     font-family:'Great Vibes', cursive;
     color:var(--maroon);
@@ -72,9 +123,10 @@
     padding-top:40px;
     background:radial-gradient(ellipse at top, #fff7e8 0%, var(--cream) 60%);
   }
-  .hero-names{font-size:52px;line-height:1.15;margin:6px 0;}
-  .hero-amp{font-size:26px;color:var(--gold);margin:2px 0;}
-  .gate-svg{margin:18px auto 6px;display:block;}
+  .hero-names{font-size:52px;line-height:1.15;margin:6px 0;animation:shimmerText 3.5s ease-in-out infinite;}
+  .hero-amp{font-size:26px;color:var(--gold);margin:2px 0;display:inline-block;animation:softPulse 2.4s ease-in-out infinite;}
+  .gate-svg{margin:18px auto 6px;display:block;animation:gentleFloat 5s ease-in-out infinite;}
+  .gate-svg .peacock-wing{transform-origin:35px 55px;animation:gentleSway 4s ease-in-out infinite;}
   .hero-sub{font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);margin-top:10px;}
 
   .blessing-card{
@@ -86,11 +138,15 @@
     position:relative;
     overflow:visible;
   }
-  .corner-floral{position:absolute;z-index:2;pointer-events:none;}
-  .corner-floral-tl{ top:-14px; left:-16px; }
-  .corner-floral-tr{ top:-14px; right:-16px; transform:scaleX(-1); }
-  .corner-floral-bl{ bottom:-14px; left:-16px; transform:scaleY(-1); }
-  .corner-floral-br{ bottom:-14px; right:-16px; transform:scale(-1,-1); }
+  .corner-floral{position:absolute;z-index:2;pointer-events:none;transform-origin:center;}
+  .corner-floral-tl{ top:-14px; left:-16px; animation:swayTL 4.5s ease-in-out infinite; }
+  .corner-floral-tr{ top:-14px; right:-16px; animation:swayTR 4.5s ease-in-out infinite .6s; }
+  .corner-floral-bl{ bottom:-14px; left:-16px; animation:swayBL 4.5s ease-in-out infinite 1.2s; }
+  .corner-floral-br{ bottom:-14px; right:-16px; animation:swayBR 4.5s ease-in-out infinite 1.8s; }
+  @keyframes swayTL{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+  @keyframes swayTR{0%,100%{transform:scaleX(-1) rotate(-3deg);}50%{transform:scaleX(-1) rotate(3deg);}}
+  @keyframes swayBL{0%,100%{transform:scaleY(-1) rotate(-3deg);}50%{transform:scaleY(-1) rotate(3deg);}}
+  @keyframes swayBR{0%,100%{transform:scale(-1,-1) rotate(-3deg);}50%{transform:scale(-1,-1) rotate(3deg);}}
   .shloka{font-style:italic;font-size:15px;color:var(--maroon);line-height:1.7;}
   .parents{font-weight:600;margin:14px 0 6px;font-size:17px;}
   .blessing-text{font-size:16px;line-height:1.6;margin:8px 0 14px;}
@@ -106,7 +162,11 @@
     width:78px;height:78px;background:var(--maroon);
     clip-path: path('M39 70C39 70 4 46 4 22C4 8 16 0 27 4C33 6 39 12 39 18C39 12 45 6 51 4C62 0 74 8 74 22C74 46 39 70 39 70Z');
     display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;
+    opacity:0;animation:popIn .7s ease forwards, heartBeat 2.2s ease-in-out infinite 1s;
   }
+  .hearts .heart:nth-child(1){animation-delay:0s, 1s;}
+  .hearts .heart:nth-child(2){animation-delay:.18s, 1.18s;}
+  .hearts .heart:nth-child(3){animation-delay:.36s, 1.36s;}
   .heart .num{font-family:'Cinzel',serif;font-size:20px;font-weight:600;}
   .heart .cap{font-size:9px;letter-spacing:1px;text-transform:uppercase;}
   .date-copy{max-width:320px;margin:0 auto;line-height:1.7;font-size:16px;}
@@ -120,6 +180,7 @@
   .couple-card .rel{font-size:12px;color:var(--gold);letter-spacing:1px;}
 
   .mandap-svg{display:block;margin:0 auto;}
+  .mandap-svg .mandap-flower{transform-box:fill-box;transform-origin:center;animation:twinkleFade 2.4s ease-in-out infinite;}
 
   .btn{
     display:inline-block;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
@@ -128,6 +189,7 @@
   .hashtag-pill{
     display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--gold-light);border-radius:30px;
     padding:10px 20px;font-size:18px;color:var(--maroon);font-weight:600;margin-top:10px;cursor:pointer;
+    animation:softPulse 2.6s ease-in-out infinite;
   }
   .hint{font-size:12px;color:#8a7a60;margin-top:8px;}
 
@@ -171,7 +233,12 @@
     border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;
   }
   .timer .cell .l{font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:6px;color:var(--gold-light);}
+  .timer .cell .n{animation:softPulse 2s ease-in-out infinite;}
+  .timer .cell:nth-child(2) .n{animation-delay:.2s;}
+  .timer .cell:nth-child(3) .n{animation-delay:.4s;}
+  .timer .cell:nth-child(4) .n{animation-delay:.6s;}
   .crafted{font-size:12px;color:var(--gold-light);margin-top:10px;}
+  .footer-svg{animation:gentleFloat 4.5s ease-in-out infinite;}
 
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
@@ -214,12 +281,16 @@
     color:var(--gold);
     text-transform:uppercase;
     margin-bottom:14px;
+    opacity:0;
+    animation:popIn .7s ease .1s forwards;
   }
   .splash-names{
     font-size:40px;
     line-height:1.3;
     margin-bottom:40px;
     word-break:break-word;
+    opacity:0;
+    animation:popIn .8s ease .35s forwards, shimmerText 3.5s ease-in-out 1.2s infinite;
   }
   .splash-btn{
     font-family:'Cinzel',serif;
@@ -232,7 +303,8 @@
     background:var(--maroon);
     color:#fff;
     cursor:pointer;
-    animation:splashPulse 1.8s ease-in-out infinite;
+    opacity:0;
+    animation:popIn .7s ease .6s forwards, splashPulse 1.8s ease-in-out 1.3s infinite;
   }
   @keyframes splashPulse{
     0%,100%{ box-shadow:0 0 0 0 rgba(138,31,59,.35); }
@@ -260,7 +332,10 @@
 </head>
 <body>
 
-<div class="page" id="pageRoot"><div class="state-msg">Loading invitation…</div></div>
+<div class="page-wrap" id="pageWrap">
+  <div class="page" id="pageRoot"><div class="state-msg">Loading invitation…</div></div>
+  <div class="petal-layer no-print" id="petalLayer"></div>
+</div>
 
 <div class="splash no-print" id="splash" style="display:none;">
   <div class="splash-inner">
@@ -353,9 +428,9 @@ const TEMPLATES = {
         </g>
         <circle cx="150" cy="27" r="2.6" fill="#8a1f3b"/>
         <path d="M150 33 L160 37 L150 41 Z" fill="#d8b25c" opacity=".85"/>
-        <use href="#peacock" x="30" y="68" width="60" height="82"/>
+        <use class="peacock-wing" href="#peacock" x="30" y="68" width="60" height="82"/>
         <g transform="translate(300,0) scale(-1,1)">
-          <use href="#peacock" x="30" y="68" width="60" height="82"/>
+          <use class="peacock-wing" href="#peacock" x="30" y="68" width="60" height="82" style="animation-delay:.3s;"/>
         </g>
       </svg>
       <div class="hero-sub">${dateLine}</div>
@@ -474,14 +549,14 @@ const TEMPLATES = {
         <rect x="249" y="40" width="9" height="118" fill="#b9892f"/>
         <path d="M245 40 L262 40 L253.5 30 Z" fill="#b9892f"/>
         <path d="M26 42 Q140 -14 254 42" fill="none" stroke="#8a1f3b" stroke-width="3"/>
-        <use href="#flower" x="22" y="35" width="13" height="13"/>
-        <use href="#flower" x="52" y="12" width="13" height="13"/>
-        <use href="#flower" x="86" y="-4" width="13" height="13"/>
-        <use href="#flower" x="122" y="-13" width="13" height="13"/>
-        <use href="#flower" x="156" y="-13" width="13" height="13"/>
-        <use href="#flower" x="190" y="-4" width="13" height="13"/>
-        <use href="#flower" x="224" y="12" width="13" height="13"/>
-        <use href="#flower" x="252" y="35" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:0s" href="#flower" x="22" y="35" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.2s" href="#flower" x="52" y="12" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.4s" href="#flower" x="86" y="-4" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.6s" href="#flower" x="122" y="-13" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.8s" href="#flower" x="156" y="-13" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.6s" href="#flower" x="190" y="-4" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.4s" href="#flower" x="224" y="12" width="13" height="13"/>
+        <use class="mandap-flower" style="animation-delay:.2s" href="#flower" x="252" y="35" width="13" height="13"/>
         <path d="M90 44 Q90 58 90 66" stroke="#b9892f" stroke-width="1.2" fill="none"/>
         <circle cx="90" cy="70" r="3.4" fill="#8a1f3b"/>
         <path d="M140 36 Q140 52 140 62" stroke="#b9892f" stroke-width="1.2" fill="none"/>
@@ -602,6 +677,27 @@ const TEMPLATES = {
       <div class="crafted">Made with ❤ for our special day</div>
     </section>`
 };
+
+function spawnPetals(){
+  const layer = document.getElementById('petalLayer');
+  if(!layer) return;
+  const glyphs = ['❀','✿','❁'];
+  const colors = ['#8a1f3b','#d8b25c','#b9892f'];
+  const count = 14;
+  for(let i=0;i<count;i++){
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = glyphs[i % glyphs.length];
+    p.style.left = (Math.random()*94 + 2) + '%';
+    p.style.color = colors[i % colors.length];
+    p.style.fontSize = (10 + Math.random()*10) + 'px';
+    const duration = 9 + Math.random()*10;
+    p.style.animationDuration = duration + 's';
+    p.style.animationDelay = (Math.random()*duration) + 's';
+    layer.appendChild(p);
+  }
+}
+spawnPetals();
 
 function toast(msg){
   const t = document.getElementById('toast');
