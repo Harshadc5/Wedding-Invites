@@ -61,6 +61,32 @@
     opacity:1;
     transform:translateY(0) scale(1);
   }
+  .reveal-left{ transform:translateX(-50px) scale(.97); }
+  .reveal-left.in{ transform:translateX(0) scale(1); }
+  .reveal-right{ transform:translateX(50px) scale(.97); }
+  .reveal-right.in{ transform:translateX(0) scale(1); }
+  .reveal-zoom{ transform:scale(.8); }
+  .reveal-zoom.in{ transform:scale(1); }
+  .reveal-rotate{ transform:rotate(-5deg) scale(.9) translateY(18px); }
+  .reveal-rotate.in{ transform:rotate(0deg) scale(1) translateY(0); }
+
+  .stagger-child{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in .stagger-child{ opacity:1; transform:translateY(0); }
+  .reveal.in .stagger-child:nth-child(1){ transition-delay:.05s; }
+  .reveal.in .stagger-child:nth-child(2){ transition-delay:.2s; }
+  .reveal.in .stagger-child:nth-child(3){ transition-delay:.35s; }
+  .reveal.in .stagger-child:nth-child(4){ transition-delay:.5s; }
+
+  .sparkle{
+    position:absolute; pointer-events:none; color:var(--gold-light);
+    animation:sparkleTwinkle ease-in-out infinite;
+  }
+  @keyframes sparkleTwinkle{
+    0%,100%{ opacity:0; transform:scale(.4) rotate(0deg); }
+    50%{ opacity:.9; transform:scale(1) rotate(25deg); }
+  }
+
+  .parallax-slow{ will-change:transform; }
 
   @keyframes gentleFloat{
     0%,100%{ transform:translateY(0); }
@@ -162,11 +188,15 @@
     width:78px;height:78px;background:var(--maroon);
     clip-path: path('M39 70C39 70 4 46 4 22C4 8 16 0 27 4C33 6 39 12 39 18C39 12 45 6 51 4C62 0 74 8 74 22C74 46 39 70 39 70Z');
     display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;
-    opacity:0;animation:popIn .7s ease forwards, heartBeat 2.2s ease-in-out infinite 1s;
+    opacity:0;transform:scale(.5) translateY(14px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.34,1.56,.64,1);
+    animation:heartBeat 2.2s ease-in-out infinite;
+    animation-play-state:paused;
   }
-  .hearts .heart:nth-child(1){animation-delay:0s, 1s;}
-  .hearts .heart:nth-child(2){animation-delay:.18s, 1.18s;}
-  .hearts .heart:nth-child(3){animation-delay:.36s, 1.36s;}
+  .reveal.in .heart{ opacity:1; transform:scale(1) translateY(0); animation-play-state:running; }
+  .hearts .heart:nth-child(1){transition-delay:0s;}
+  .hearts .heart:nth-child(2){transition-delay:.18s;}
+  .hearts .heart:nth-child(3){transition-delay:.36s;}
   .heart .num{font-family:'Cinzel',serif;font-size:20px;font-weight:600;}
   .heart .cap{font-size:9px;letter-spacing:1px;text-transform:uppercase;}
   .date-copy{max-width:320px;margin:0 auto;line-height:1.7;font-size:16px;}
@@ -175,7 +205,13 @@
   .frame:before,.frame:after{content:"";position:absolute;width:16px;height:16px;border:2px solid var(--gold);top:-2px;left:-2px;border-right:none;border-bottom:none;}
   .frame:after{left:auto;right:-2px;top:auto;bottom:-2px;border:2px solid var(--gold);border-left:none;border-top:none;}
   .couple-grid{display:flex;gap:16px;margin-top:18px;}
-  .couple-card{flex:1;background:rgba(255,255,255,.5);border-radius:12px;padding:18px 10px;}
+  .couple-card{
+    flex:1;background:rgba(255,255,255,.5);border-radius:12px;padding:18px 10px;
+    opacity:0;transition:opacity .7s ease .15s, transform .7s ease .15s;
+  }
+  .couple-card:first-child{ transform:translateX(-36px); }
+  .couple-card:last-child{ transform:translateX(36px); transition-delay:.32s; }
+  .reveal.in .couple-card{ opacity:1; transform:translateX(0); }
   .couple-card .name{font-size:26px;}
   .couple-card .rel{font-size:12px;color:var(--gold);letter-spacing:1px;}
 
@@ -227,7 +263,12 @@
   .countdown-section h2{font-family:'Cinzel',serif;font-size:22px;font-weight:600;}
   .countdown-copy{font-size:15px;line-height:1.6;opacity:.9;}
   .timer{display:flex;justify-content:center;gap:14px;margin:24px 0;}
-  .timer .cell{width:60px;}
+  .timer .cell{width:60px;opacity:0;transform:translateY(16px) scale(.9);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in .timer .cell{opacity:1;transform:translateY(0) scale(1);}
+  .reveal.in .timer .cell:nth-child(1){transition-delay:.1s;}
+  .reveal.in .timer .cell:nth-child(2){transition-delay:.22s;}
+  .reveal.in .timer .cell:nth-child(3){transition-delay:.34s;}
+  .reveal.in .timer .cell:nth-child(4){transition-delay:.46s;}
   .timer .cell .n{
     font-family:'Cinzel',serif;font-size:24px;background:rgba(255,255,255,.08);border:1px solid rgba(216,178,92,.5);
     border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;
@@ -388,7 +429,7 @@ const TEMPLATES = {
     const dateLine = (dt.getDate()+'').padStart(2,'0') + ' ' + ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'][dt.getMonth()] + ' ' + dt.getFullYear();
     const [n1,,n2] = namesInOrder(d);
     return `
-    <section class="hero reveal" style="padding-bottom:12px;">
+    <section class="hero reveal reveal-zoom" style="padding-bottom:12px;">
       <div class="label">The Wedding Of</div>
       <div class="hero-names script">${esc(n1)}</div>
       <div class="hero-amp">&amp;</div>
@@ -492,13 +533,13 @@ const TEMPLATES = {
         <div class="beloved-parents">${esc(botMother)} &amp; ${esc(botFather)}</div>
       </div>
     </section>
-    <div class="garden"></div>`;
+    <div class="garden parallax-slow"></div>`;
   },
 
   dateToRemember: (d) => {
     const dt = new Date(d.weddingDate + 'T00:00:00');
     return `
-    <section class="date-section reveal">
+    <section class="date-section reveal reveal-rotate">
       <div class="label">A Date To Remember</div>
       <div class="hearts">
         <div class="heart"><div class="num">${dt.getDate()}</div><div class="cap">Day</div></div>
@@ -533,7 +574,7 @@ const TEMPLATES = {
   },
 
   mandap: () => `
-    <section class="reveal" style="padding-top:0;">
+    <section class="reveal reveal-zoom" style="padding-top:0;">
       <svg class="mandap-svg" width="280" height="186" viewBox="0 0 280 186">
         <defs>
           <symbol id="flower" viewBox="0 0 10 10">
@@ -593,7 +634,7 @@ const TEMPLATES = {
     </section>`,
 
   welcome: (d) => `
-    <section class="reveal" style="padding-top:10px;padding-bottom:12px;">
+    <section class="reveal reveal-left" style="padding-top:10px;padding-bottom:12px;">
       <div class="label" style="font-size:16px;color:var(--maroon);font-family:'Cinzel',serif;">We look forward to welcoming you</div>
       <div class="welcome-card">
         <div class="label" style="color:var(--maroon-dark);">Venue</div>
@@ -603,7 +644,7 @@ const TEMPLATES = {
     </section>`,
 
   wishes: (d) => `
-    <section class="reveal" style="padding-top:4px;">
+    <section class="reveal reveal-right" style="padding-top:4px;">
       <div class="label">A Little Note For Us</div>
       <div class="team-toggle no-print" id="teamToggle">
         <button data-team="Team Bride" class="active">Team Bride</button>
@@ -627,7 +668,7 @@ const TEMPLATES = {
     </section>`,
 
   countdown: () => `
-    <section class="countdown-section reveal">
+    <section class="countdown-section reveal reveal-zoom">
       <div class="label">Counting Down To Our</div>
       <h2>Big Day</h2>
       <div class="countdown-copy">Our families are delighted that you will join us for one of the happiest days of our lives</div>
@@ -698,6 +739,45 @@ function spawnPetals(){
   }
 }
 spawnPetals();
+
+function spawnSparkles(){
+  const layer = document.getElementById('petalLayer');
+  if(!layer) return;
+  const count = 10;
+  for(let i=0;i<count;i++){
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = '✦';
+    s.style.left = (Math.random()*92 + 2) + '%';
+    s.style.top = (Math.random()*96 + 1) + '%';
+    s.style.fontSize = (7 + Math.random()*8) + 'px';
+    const duration = 2.4 + Math.random()*2.6;
+    s.style.animationDuration = duration + 's';
+    s.style.animationDelay = (Math.random()*duration) + 's';
+    layer.appendChild(s);
+  }
+}
+spawnSparkles();
+
+function initParallax(){
+  const page = document.getElementById('pageRoot');
+  if(!page) return;
+  let ticking = false;
+  const update = ()=>{
+    ticking = false;
+    const scrollY = page.scrollTop || window.scrollY || 0;
+    page.querySelectorAll('.parallax-slow').forEach((el, i)=>{
+      const depth = (i % 2 === 0) ? .04 : .07;
+      el.style.transform = 'translateY(' + (-(scrollY % 2000) * depth) + 'px)';
+    });
+  };
+  const onScroll = ()=>{
+    if(!ticking){ requestAnimationFrame(update); ticking = true; }
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  page.addEventListener('scroll', onScroll, {passive:true});
+}
+initParallax();
 
 function toast(msg){
   const t = document.getElementById('toast');
